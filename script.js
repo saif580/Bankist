@@ -76,9 +76,9 @@ const displayMovements=function(movements){
   }
 }
 
-const calcDisplayBalance=function(movements){
-  const balance=movements.reduce((acc,cur)=>acc+cur);
-  labelBalance.textContent=`${balance} EUR`;
+const calcDisplayBalance=function(acc){
+  acc.balance=acc.movements.reduce((acc,cur)=>acc+cur);
+  labelBalance.textContent=`${acc.balance} €`;
 };
 
 // calcDisplayBalance(account1.movements);
@@ -113,14 +113,15 @@ const createUserNames=function(acc){
 }
 createUserNames(accounts);
 
-
+let currentAccount
 //Event handler
 btnLogin.addEventListener('click',function(e){
   //prevent form from submitting(form reloads default behaviour)
   e.preventDefault();
-  const currentAccount=accounts.find(acc=>
+  currentAccount=accounts.find(acc=>
     acc.username===inputLoginUsername.value
   )
+  // console.log(currentAccount);
   //optional chaining to check if current account exist and prevent error in console
   if(currentAccount?.pin===Number(inputLoginPin.value)){
     //Display UI and welcome message
@@ -133,7 +134,7 @@ btnLogin.addEventListener('click',function(e){
     inputLoginPin.blur();
 
     //display balance
-    calcDisplayBalance(currentAccount.movements);
+    calcDisplayBalance(currentAccount);
 
     //display movements
     displayMovements(currentAccount.movements);
@@ -141,6 +142,27 @@ btnLogin.addEventListener('click',function(e){
     //display summary
     calcDisplaySummary(currentAccount);
 
+  }
+});
+
+btnTransfer.addEventListener('click',function(e){
+  e.preventDefault();
+  const amount=Number(inputTransferAmount.value);
+  const transferTo=accounts.find(acc=>
+    acc.username===inputTransferTo.value
+  );
+  console.log(currentAccount);
+  if(amount>=0 && amount<=currentAccount.balance && transferTo && transferTo.username!==currentAccount.username){
+    currentAccount.movements.push(-amount);
+    transferTo.movements.push(amount);
+    calcDisplayBalance(currentAccount)
+    displayMovements(currentAccount.movements);
+    calcDisplaySummary(currentAccount);
+    inputTransferAmount.value="";
+    inputTransferTo.value="";
+    inputTransferTo.blur();
+  } else {
+    console.log("Cannot Transfer the amount");
   }
 })
 
