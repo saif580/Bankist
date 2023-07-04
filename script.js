@@ -166,6 +166,23 @@ btnTransfer.addEventListener('click',function(e){
   }
 })
 
+btnLoan.addEventListener('click',function(e){
+  e.preventDefault();
+  const inputLoan=Number(inputLoanAmount.value);
+  const loanCondition=currentAccount.movements.some(arr=>
+    arr>0 && arr>=inputLoan);
+  if(loanCondition){
+    currentAccount.movements.push(Number(inputLoan));
+    calcDisplayBalance(currentAccount);
+    displayMovements(currentAccount.movements);
+    calcDisplaySummary(currentAccount);
+  } else {
+    alert("Cannot Santion Loan");
+  }
+  inputLoanAmount.value='';
+  inputLoanAmount.blur();
+})
+
 btnClose.addEventListener('click',function(e){
   e.preventDefault();
   
@@ -176,8 +193,9 @@ btnClose.addEventListener('click',function(e){
     const index=accounts.findIndex(acc=>acc.username===currentAccount.username);
     accounts.splice(index,1);
     containerApp.style.opacity=0;
-    inputCloseUsername.value=inputClosePin.value='';
   }
+
+  inputCloseUsername.value=inputClosePin.value='';
 })
 
 
