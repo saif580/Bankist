@@ -64,6 +64,7 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 const displayMovements=function(movements){
   containerMovements.innerHTML='';
+  // const mov=sort?movements.slice().sort((a,b)=>a-b):movements;
   for(let i=0;i<movements.length;i++){
     const type=movements[i]>0?'deposit':'withdrawal';
     const html=`
@@ -196,6 +197,20 @@ btnClose.addEventListener('click',function(e){
   }
 
   inputCloseUsername.value=inputClosePin.value='';
+});
+
+let isToggled=true;
+
+btnSort.addEventListener('click',function(e){
+  e.preventDefault();
+  if(isToggled){
+    const sort=currentAccount.movements.slice().sort((a,b)=>a-b);
+    displayMovements(sort)
+    isToggled=false;
+  } else {
+    displayMovements(currentAccount.movements);
+    isToggled=true;
+  }
 })
 
 
