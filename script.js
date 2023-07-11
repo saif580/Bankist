@@ -1,11 +1,8 @@
 'use strict'
 
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
 // BANKIST APP
 
 // Data
-
 const account1 = {
   owner: 'Jonas Schmedtmann',
   movements: [200, 455.23, -306.5, 25000, -642.21, -133.9, 79.97, 1300],
@@ -162,13 +159,37 @@ const createUserNames = function (acc) {
 }
 createUserNames(accounts)
 
+let timer=300,countDown;
+let logOutTimer=function(){
+  let minutes=`${Math.floor(timer/60)}`.padStart(2,0);
+  let seconds=`${timer%60}`.padStart(2,0);
+  timer--
+  // console.log(minutes+':'+seconds);
+  labelTimer.textContent=`${minutes}:${seconds}`
+  if(timer<0){
+    clearInterval(countDown);
+    containerApp.style.opacity = 0;
+    inputTransferAmount.value = ''
+    inputTransferTo.value = ''
+    inputTransferTo.blur()
+    inputLoanAmount.value = ''
+    inputLoanAmount.blur()
+    inputClosePin.value='';
+    inputCloseUsername.value='';
+    timer=300;
+    console.log("countdown over");
+  }
+}
+// let countDown=setInterval(logOutTimer,1000);
+
+
 let currentAccount;
 //faking loggin
-currentAccount = account1
-calcDisplayBalance(currentAccount)
-displayMovements(currentAccount)
-calcDisplaySummary(currentAccount)
-containerApp.style.opacity = 100
+// currentAccount = account1
+// calcDisplayBalance(currentAccount)
+// displayMovements(currentAccount)
+// calcDisplaySummary(currentAccount)
+// containerApp.style.opacity = 100
 
 
 const options={
@@ -224,6 +245,7 @@ btnLogin.addEventListener('click', function (e) {
 
     //display summary
     calcDisplaySummary(currentAccount)
+    countDown=setInterval(logOutTimer,1000);
   }
 })
 
@@ -264,11 +286,13 @@ btnLoan.addEventListener('click', function (e) {
     arr => arr > 0 && arr >= inputLoan
   )
   if (loanCondition) {
+    setTimeout(function(){
     currentAccount.movementsDates.push(loanDate)
     currentAccount.movements.push(Number(inputLoan))
     calcDisplayBalance(currentAccount)
     displayMovements(currentAccount)
     calcDisplaySummary(currentAccount)
+    },5000)
   } else {
     alert('Cannot Santion Loan')
   }
