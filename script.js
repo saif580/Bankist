@@ -93,7 +93,7 @@ const displayMovements = function (acc) {
   if (isToggled) {
     tempMov = acc.sortMov
   }
-  console.log(tempMov)
+  // console.log(tempMov)
   for (let i = 0; i < tempMov.length; i++) {
     const type = tempMov[i] > 0 ? 'deposit' : 'withdrawal'
     const date = new Date(acc.movementsDates[i])
@@ -159,15 +159,16 @@ const createUserNames = function (acc) {
 }
 createUserNames(accounts)
 
-let timer=300,countDown;
+let timer=300,countDown,timerFlag;
 let logOutTimer=function(){
+  timerFlag=true;
   let minutes=`${Math.floor(timer/60)}`.padStart(2,0);
   let seconds=`${timer%60}`.padStart(2,0);
-  timer--
-  // console.log(minutes+':'+seconds);
+  timer--;
   labelTimer.textContent=`${minutes}:${seconds}`
   if(timer<0){
     clearInterval(countDown);
+    timerFlag=false;
     containerApp.style.opacity = 0;
     inputTransferAmount.value = ''
     inputTransferTo.value = ''
@@ -176,6 +177,7 @@ let logOutTimer=function(){
     inputLoanAmount.blur()
     inputClosePin.value='';
     inputCloseUsername.value='';
+    labelWelcome.textContent='Log in to get started'
     timer=300;
     console.log("countdown over");
   }
@@ -245,7 +247,14 @@ btnLogin.addEventListener('click', function (e) {
 
     //display summary
     calcDisplaySummary(currentAccount)
-    countDown=setInterval(logOutTimer,1000);
+
+    if(timerFlag){
+      clearInterval(countDown)
+      timer=300;
+      countDown=setInterval(logOutTimer,1000)
+    } else{
+      countDown=setInterval(logOutTimer,1000);
+    }
   }
 })
 
